@@ -1,0 +1,126 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Contact Us - Bootstrap Blog" activeNav="contact">
+	<!-- Contact Section -->
+	<section class="contact" style="padding: 80px 0;">
+		<div class="container">
+			<header class="text-center" style="margin-bottom: 60px;">
+				<h1 style="font-size: 3em; margin-bottom: 15px;">Get in Touch</h1>
+				<p class="text-big" style="color: #666; font-size: 1.2em;">
+					Have a question or want to work together? We'd love to hear from you.
+				</p>
+			</header>
+
+			<div class="row">
+				<!-- Contact Form -->
+				<div class="col-lg-8">
+					<div class="contact-form">
+						<form action="#" method="post">
+							<div class="row">
+								<div class="form-group col-md-6">
+									<label for="name">Your Name <span class="text-danger">*</span></label>
+									<input type="text" name="name" id="name" placeholder="Enter your name" required class="form-control" />
+								</div>
+								<div class="form-group col-md-6">
+									<label for="email">Your Email <span class="text-danger">*</span></label>
+									<input type="email" name="email" id="email" placeholder="Enter your email" required class="form-control" />
+								</div>
+								<div class="form-group col-md-12">
+									<label for="subject">Subject <span class="text-danger">*</span></label>
+									<input type="text" name="subject" id="subject" placeholder="Enter subject" required class="form-control" />
+								</div>
+								<div class="form-group col-md-12">
+									<label for="message">Message <span class="text-danger">*</span></label>
+									<textarea name="message" id="message" rows="8" placeholder="Write your message here..." required class="form-control"></textarea>
+								</div>
+								<div class="form-group col-md-12">
+									<button type="submit" class="btn btn-primary" style="padding: 12px 40px; font-size: 1.1em;">
+										Send Message
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- Contact Information -->
+				<div class="col-lg-4">
+					<div class="contact-info" style="background: #f8f9fa; padding: 30px; border-radius: 5px; height: 100%;">
+						<h3 style="margin-bottom: 30px; font-size: 1.5em;">Contact Information</h3>
+
+						<div class="info-item" style="margin-bottom: 30px;">
+							<div style="display: flex; align-items-start;">
+								<i class="fa fa-map-marker" style="font-size: 1.5em; color: #4e66f8; margin-right: 15px; margin-top: 5px;"></i>
+								<div>
+									<h5 style="margin-bottom: 8px; font-weight: 600;">Address</h5>
+									<p style="color: #666; margin: 0;">
+										53 Broadway, Broklyn<br />
+										NY 11249, USA
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="info-item" style="margin-bottom: 30px;">
+							<div style="display: flex; align-items-start;">
+								<i class="fa fa-phone" style="font-size: 1.5em; color: #4e66f8; margin-right: 15px; margin-top: 5px;"></i>
+								<div>
+									<h5 style="margin-bottom: 8px; font-weight: 600;">Phone</h5>
+									<p style="color: #666; margin: 0;">
+										(020) 123 456 789<br />
+										(020) 123 456 790
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="info-item" style="margin-bottom: 30px;">
+							<div style="display: flex; align-items-start;">
+								<i class="fa fa-envelope" style="font-size: 1.5em; color: #4e66f8; margin-right: 15px; margin-top: 5px;"></i>
+								<div>
+									<h5 style="margin-bottom: 8px; font-weight: 600;">Email</h5>
+									<p style="color: #666; margin: 0;">
+										<a href="mailto:info@company.com" style="color: #666;">info@company.com</a><br />
+										<a href="mailto:support@company.com" style="color: #666;">support@company.com</a>
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="info-item">
+							<h5 style="margin-bottom: 15px; font-weight: 600;">Follow Us</h5>
+							<div class="social-links">
+								<a href="#" style="display: inline-block; margin-right: 15px; color: #4e66f8; font-size: 1.5em;">
+									<i class="fa fa-facebook"></i>
+								</a>
+								<a href="#" style="display: inline-block; margin-right: 15px; color: #4e66f8; font-size: 1.5em;">
+									<i class="fa fa-twitter"></i>
+								</a>
+								<a href="#" style="display: inline-block; margin-right: 15px; color: #4e66f8; font-size: 1.5em;">
+									<i class="fa fa-instagram"></i>
+								</a>
+								<a href="#" style="display: inline-block; margin-right: 15px; color: #4e66f8; font-size: 1.5em;">
+									<i class="fa fa-linkedin"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Map Section (Optional) -->
+	<section class="map" style="padding: 0;">
+		<div class="container-fluid" style="padding: 0;">
+			<div style="width: 100%; height: 400px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; color: #999;">
+				<div style="text-align: center;">
+					<i class="fa fa-map-marker" style="font-size: 3em; margin-bottom: 10px;"></i>
+					<p>Map integration area</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</MainLayout>
