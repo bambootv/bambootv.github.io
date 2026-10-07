@@ -1,0 +1,96 @@
+/* Styles for Markdown content rendered inside the theme's `.post-body`.
+   The vendored theme only styles headings and paragraphs there. */
+
+.blog-post .post-thumbnail img {
+	height: auto;
+}
+
+/* Markdown can't add the theme's `.lead` class, so the opening paragraph gets its look */
+.blog-post .post-body > p:first-child:not(.lead) {
+	font-size: 1.3rem;
+	font-weight: 300;
+	line-height: 1.5;
+	color: inherit;
+}
+
+.blog-post .post-body h2,
+.blog-post .post-body h3,
+.blog-post .post-body h4,
+.blog-post .post-body h5,
+.blog-post .post-body h6 {
+	margin: 1.6em 0 0.6em;
+}
+
+.blog-post .post-body ul,
+.blog-post .post-body ol {
+	margin-bottom: 30px;
+	line-height: 1.7em;
+	color: #555;
+}
+
+.blog-post .post-body li p {
+	margin-bottom: 0;
+}
+
+.blog-post .post-body img {
+	max-width: 100%;
+	height: auto;
+}
+
+.blog-post .post-body a {
+	text-decoration: underline;
+}
+
+.blog-post .post-body blockquote {
+	margin-bottom: 30px;
+	padding: 20px;
+	border: 1px solid #eee;
+	border-left: 6px solid #eee;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	font-size: 1.05em;
+	line-height: 1.7em;
+}
+
+.blog-post .post-body blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+.blog-post .post-body pre {
+	margin-bottom: 30px;
+	padding: 1.2em 1.4em;
+	border-radius: 6px;
+	font-size: 0.9em;
+	line-height: 1.6;
+	overflow-x: auto;
+}
+
+.blog-post .post-body :not(pre) > code {
+	padding: 2px 6px;
+	border-radius: 3px;
+	background: #f4f4f4;
+	color: #c7254e;
+	font-size: 0.9em;
+}
+
+.blog-post .post-body table {
+	display: block;
+	width: 100%;
+	margin-bottom: 30px;
+	border-collapse: collapse;
+	overflow-x: auto;
+}
+
+.blog-post .post-body th,
+.blog-post .post-body td {
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+}
+
+.blog-post .post-body th {
+	background: #fafafa;
+}
+
+.blog-post .post-body hr {
+	margin: 40px 0;
+}

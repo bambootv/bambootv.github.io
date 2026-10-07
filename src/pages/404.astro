@@ -1,8 +1,11 @@
 ---
+import { getLang, useTranslations } from '../i18n/ui';
 import MainLayout from '../layouts/MainLayout.astro';
+
+const t = useTranslations(getLang(Astro.currentLocale));
 ---
 
-<MainLayout title="404 - Page Not Found" activeNav="home">
+<MainLayout title={t('404.title')} activeNav="home" availableLangs={[]}>
 	<style>
 		.error-container {
 			margin: 100px auto;
@@ -48,9 +51,9 @@ import MainLayout from '../layouts/MainLayout.astro';
 
 	<div class="error-container">
 		<h1>404</h1>
-		<h2>Page Not Found</h2>
-		<p><strong>Oops! The page you are looking for doesn't exist.</strong></p>
-		<p>It might have been moved or deleted.</p>
-		<a href="/" class="btn-home">Back to Home</a>
+		<h2>{t('404.title')}</h2>
+		<p><strong>{t('404.lead')}</strong></p>
+		<p>{t('404.hint')}</p>
+		<a href="/" class="btn-home">{t('404.home')}</a>
 	</div>
 </MainLayout>

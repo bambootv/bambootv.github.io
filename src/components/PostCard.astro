@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getLang } from '../i18n/ui';
+import { getRelativeTime } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	href: string;
+}
+
+const { post, href } = Astro.props;
+const { title, description, pubDate, heroImage, category, author, authorAvatar, commentCount } = post.data;
+const lang = getLang(Astro.currentLocale);
+const hasComments = commentCount !== undefined;
+---
+
+<div class="post col-xl-6">
+	{
+		heroImage && (
+			<div class="post-thumbnail">
+				<a href={href}>
+					<Image src={heroImage} width={720} height={480} alt="" class="img-fluid" />
+				</a>
+			</div>
+		)
+	}
+	<div class="post-details">
+		<div class="post-meta d-flex justify-content-between">
+			<div class="date meta-last"><FormattedDate date={pubDate} format="card" /></div>
+			{
+				category.length > 0 && (
+					<div class="category">
+						{/* No category pages yet, so this points at the listing */}
+						<a href={getRelativeLocaleUrl(lang, 'blog')}>{category[0]}</a>
+					</div>
+				)
+			}
+		</div>
+		<a href={href}>
+			<h3 class="h4">{title}</h3>
+		</a>
+		<p class="text-muted">{description}</p>
+		<footer class="post-footer d-flex align-items-center">
+			<a href={getRelativeLocaleUrl(lang, 'about')} class="author d-flex align-items-center flex-wrap">
+				<div class="avatar">
+					<img src={authorAvatar} alt="" class="img-fluid" />
+				</div>
+				<div class="title"><span>{author}</span></div>
+			</a>
+			<div class:list={['date', { 'meta-last': !hasComments }]}>
+				<i class="icon-clock"></i>
+				<time datetime={pubDate.toISOString()}>{getRelativeTime(pubDate, lang)}</time>
+			</div>
+			{
+				hasComments && (
+					<div class="comments meta-last">
+						<i class="icon-comment" />
+						{commentCount}
+					</div>
+				)
+			}
+		</footer>
+	</div>
+</div>

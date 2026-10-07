@@ -1,17 +1,19 @@
 ---
+import { getLang } from '../i18n/ui';
+
 interface Props {
 	date: Date;
+	// 'card' renders the theme's listing style: "20 May | 2016"
+	format?: 'long' | 'card';
 }
 
-const { date } = Astro.props;
+const { date, format = 'long' } = Astro.props;
+const isVi = getLang(Astro.currentLocale) === 'vi';
+
+const text =
+	format === 'card'
+		? `${date.toLocaleDateString(isVi ? 'vi-VN' : 'en-GB', { day: 'numeric', month: isVi ? 'long' : 'short' })} | ${date.getFullYear()}`
+		: date.toLocaleDateString(isVi ? 'vi-VN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<time datetime={date.toISOString()}>
-	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
-</time>
+<time datetime={date.toISOString()}>{text}</time>

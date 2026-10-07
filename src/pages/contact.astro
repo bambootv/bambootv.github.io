@@ -1,8 +1,11 @@
 ---
+import { getLang, useTranslations } from '../i18n/ui';
 import MainLayout from '../layouts/MainLayout.astro';
+
+const t = useTranslations(getLang(Astro.currentLocale));
 ---
 
-<MainLayout title="Contact Us - Bootstrap Blog" activeNav="contact">
+<MainLayout title={t('nav.contact')} activeNav="contact">
 	<!-- Contact Section -->
 	<section class="contact" style="padding: 80px 0;">
 		<div class="container">

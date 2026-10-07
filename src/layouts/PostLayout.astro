@@ -1,0 +1,156 @@
+---
+import '../styles/prose.css';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import FormattedDate from '../components/FormattedDate.astro';
+import PostComments from '../components/PostComments.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { AUTHOR } from '../consts';
+import { type Lang, getLang, useTranslations } from '../i18n/ui';
+import { getRelativeTime } from '../lib/posts';
+import MainLayout from './MainLayout.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate?: Date;
+	updatedDate?: Date;
+	heroImage?: ImageMetadata;
+	category?: string[];
+	author?: string;
+	authorAvatar?: string;
+	commentCount?: number;
+	activeNav?: 'blog' | 'about';
+	availableLangs?: Lang[];
+}
+
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	category = [],
+	author = AUTHOR.name,
+	authorAvatar = AUTHOR.avatar,
+	commentCount,
+	activeNav = 'blog',
+	availableLangs,
+} = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const hasComments = commentCount !== undefined;
+---
+
+<MainLayout
+	title={title}
+	description={description}
+	image={heroImage}
+	activeNav={activeNav}
+	availableLangs={availableLangs}
+>
+	<div class="container">
+		<div class="row">
+			<main class="post blog-post col-lg-8">
+				<div class="container">
+					<article class="post-single">
+						{
+							heroImage && (
+								<div class="post-thumbnail">
+									<Image src={heroImage} width={1020} alt="" class="img-fluid" />
+								</div>
+							)
+						}
+						<div class="post-details">
+							{
+								category.length > 0 && (
+									<div class="post-meta d-flex justify-content-between">
+										<div class="category">
+											{category.map((name) => <a href={getRelativeLocaleUrl(lang, 'blog')}>{name}</a>)}
+										</div>
+									</div>
+								)
+							}
+							<h1>
+								{title}
+								{pubDate && <a href="#"><i class="fa fa-bookmark-o" /></a>}
+							</h1>
+							{
+								pubDate && (
+									<div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+										<a href={getRelativeLocaleUrl(lang, 'about')} class="author d-flex align-items-center flex-wrap">
+											<div class="avatar">
+												<img src={authorAvatar} alt="" class="img-fluid" />
+											</div>
+											<div class="title">
+												<span>{author}</span>
+											</div>
+										</a>
+										<div class="d-flex align-items-center flex-wrap">
+											<div class="date">
+												<i class="icon-clock" />
+												<time datetime={pubDate.toISOString()}>{getRelativeTime(pubDate, lang)}</time>
+											</div>
+											{updatedDate && (
+												<div class="date">
+													{t('post.updated')} <FormattedDate date={updatedDate} />
+												</div>
+											)}
+											{/* Sample view count from the theme */}
+											<div class:list={['views', { 'meta-last': !hasComments }]}>
+												<i class="icon-eye" /> 500
+											</div>
+											{hasComments && (
+												<div class="comments meta-last">
+													<i class="icon-comment" />
+													{commentCount}
+												</div>
+											)}
+										</div>
+									</div>
+								)
+							}
+							<div class="post-body">
+								<slot />
+							</div>
+							{
+								/* Sample tags, post navigation and comments from the theme, hard-coded for now */
+								pubDate && (
+										<>
+										<div class="post-tags">
+											<a href="#" class="tag">#Business</a><a href="#" class="tag">#Tricks</a><a href="#" class="tag">#Financial</a><a href="#" class="tag">#Economy</a>
+										</div>
+										<div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
+											<a href="#" class="prev-post text-left d-flex align-items-center">
+												<div class="icon prev">
+													<i class="fa fa-angle-left"></i>
+												</div>
+												<div class="text">
+													<strong class="text-primary">Previous Post </strong>
+													<h6>I Bought a Wedding Dress.</h6>
+												</div>
+											</a>
+											<a href="#" class="next-post text-right d-flex align-items-center justify-content-end">
+												<div class="text">
+													<strong class="text-primary">Next Post </strong>
+													<h6>I Bought a Wedding Dress.</h6>
+												</div>
+												<div class="icon next">
+													<i class="fa fa-angle-right"> </i>
+												</div>
+											</a>
+									</div>
+										<PostComments />
+									</>
+								)
+							}
+						</div>
+					</article>
+				</div>
+			</main>
+
+			<Sidebar />
+		</div>
+	</div>
+</MainLayout>
