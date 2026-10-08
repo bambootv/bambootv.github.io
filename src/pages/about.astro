@@ -1,14 +1,12 @@
 ---
 import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import { getLang, useTranslations } from '../i18n/ui';
+import Layout from '../layouts/PostLayout.astro';
+
+const t = useTranslations(getLang(Astro.currentLocale));
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
->
+<Layout title={t('about.title')} description={t('site.description')} heroImage={AboutHeroImage} activeNav="about">
 	<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
 		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo

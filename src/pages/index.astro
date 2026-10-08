@@ -1,8 +1,13 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getLang } from '../i18n/ui';
 import MainLayout from '../layouts/MainLayout.astro';
+
+const lang = getLang(Astro.currentLocale);
+const blogUrl = getRelativeLocaleUrl(lang, 'blog');
 ---
 
-<MainLayout title="Bootstrap Blog - B4 Template by Bootstrap Temple" activeNav="home">
+<MainLayout activeNav="home">
 
 		<!-- Hero Section-->
 		<section style="background: url(/img/hero.jpg); background-size: cover; background-position: center center;" class="hero">
@@ -10,7 +15,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 				<div class="row">
 					<div class="col-lg-7">
 						<h1>Bootstrap 4 Blog - A free template by Bootstrap Temple</h1>
-						<a href="/" class="hero-link">Discover More</a>
+						<a href={blogUrl} class="hero-link">Discover More</a>
 					</div>
 				</div>
 				<a href=".intro" class="continue link-scroll"><i class="fa fa-long-arrow-down"></i> Scroll Down</a>
@@ -43,7 +48,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 									<div class="category">
 										<a href="/">Business</a><a href="/">Technology</a>
 									</div>
-									<a href="/post">
+									<a href={blogUrl}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -79,7 +84,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 									<div class="category">
 										<a href="/">Business</a><a href="/">Technology</a>
 									</div>
-									<a href="/post">
+									<a href={blogUrl}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -109,7 +114,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 									<div class="category">
 										<a href="/">Business</a><a href="/">Technology</a>
 									</div>
-									<a href="/post">
+									<a href={blogUrl}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -158,14 +163,14 @@ import MainLayout from '../layouts/MainLayout.astro';
 				<div class="row">
 					<div class="post col-md-4">
 						<div class="post-thumbnail">
-							<a href="/post"><img src="/img/blog-1.jpg" alt="..." class="img-fluid" /></a>
+							<a href={blogUrl}><img src="/img/blog-1.jpg" alt="..." class="img-fluid" /></a>
 						</div>
 						<div class="post-details">
 							<div class="post-meta d-flex justify-content-between">
 								<div class="date">20 May | 2016</div>
 								<div class="category"><a href="/">Business</a></div>
 							</div>
-							<a href="/post">
+							<a href={blogUrl}>
 								<h3 class="h4">Ways to remember your important ideas</h3>
 							</a>
 							<p class="text-muted">
@@ -175,14 +180,14 @@ import MainLayout from '../layouts/MainLayout.astro';
 					</div>
 					<div class="post col-md-4">
 						<div class="post-thumbnail">
-							<a href="/post"><img src="/img/blog-2.jpg" alt="..." class="img-fluid" /></a>
+							<a href={blogUrl}><img src="/img/blog-2.jpg" alt="..." class="img-fluid" /></a>
 						</div>
 						<div class="post-details">
 							<div class="post-meta d-flex justify-content-between">
 								<div class="date">20 May | 2016</div>
 								<div class="category"><a href="/">Technology</a></div>
 							</div>
-							<a href="/post">
+							<a href={blogUrl}>
 								<h3 class="h4">Diversity in Engineering: Effect on Questions</h3>
 							</a>
 							<p class="text-muted">
@@ -192,14 +197,14 @@ import MainLayout from '../layouts/MainLayout.astro';
 					</div>
 					<div class="post col-md-4">
 						<div class="post-thumbnail">
-							<a href="/post"><img src="/img/blog-3.jpg" alt="..." class="img-fluid" /></a>
+							<a href={blogUrl}><img src="/img/blog-3.jpg" alt="..." class="img-fluid" /></a>
 						</div>
 						<div class="post-details">
 							<div class="post-meta d-flex justify-content-between">
 								<div class="date">20 May | 2016</div>
 								<div class="category"><a href="/">Financial</a></div>
 							</div>
-							<a href="/post">
+							<a href={blogUrl}>
 								<h3 class="h4">Alberto Savoia Can Teach You About Interior</h3>
 							</a>
 							<p class="text-muted">

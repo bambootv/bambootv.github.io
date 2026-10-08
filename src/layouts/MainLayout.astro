@@ -1,21 +1,72 @@
 ---
+import type { ImageMetadata } from 'astro';
+import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from 'astro:i18n';
+import { SITE_TITLE } from '../consts';
+import { type Lang, defaultLang, getLang, languages, locales, stripLocale, useTranslations } from '../i18n/ui';
+
 interface Props {
-	title: string;
+	title?: string;
 	description?: string;
-	activeNav?: 'home' | 'blog' | 'post' | 'contact';
+	activeNav?: 'home' | 'blog' | 'about' | 'contact';
+	image?: ImageMetadata;
+	// Languages this page exists in. The switcher falls back to the home page for the others.
+	availableLangs?: Lang[];
 }
 
-const { title, description = '', activeNav = 'home' } = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const {
+	title,
+	description = t('site.description'),
+	activeNav = 'home',
+	image,
+	availableLangs = locales,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image?.src ?? '/img/hero.jpg', Astro.site);
+const rssPath = lang === defaultLang ? '/rss.xml' : `/${lang}/rss.xml`;
+
+const pagePath = stripLocale(Astro.url.pathname);
+const switchUrl = (locale: Lang) => getRelativeLocaleUrl(locale, availableLangs.includes(locale) ? pagePath : '');
+
+const navItems = [
+	{ key: 'home', path: '' },
+	{ key: 'blog', path: 'blog' },
+	{ key: 'about', path: 'about' },
+	{ key: 'contact', path: 'contact' },
+] as const;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<!-- Bootstrap Blog Template Head -->
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<title>{title}</title>
+		<title>{pageTitle}</title>
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		{
+			availableLangs.map((locale) => (
+				<link rel="alternate" hreflang={locale} href={getAbsoluteLocaleUrl(locale, pagePath)} />
+			))
+		}
+		<link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL(rssPath, Astro.site)} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta name="generator" content={Astro.generator} />
+		<!-- Open Graph / Twitter -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={SITE_TITLE} />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="all,follow" />
 		<!-- Bootstrap CSS-->
@@ -63,7 +114,7 @@ const { title, description = '', activeNav = 'home' } = Astro.props;
 					<!-- Navbar Brand -->
 					<div class="navbar-header d-flex align-items-center justify-content-between">
 						<!-- Navbar Brand -->
-						<a href="/" class="navbar-brand">Bootstrap Blog</a>
+						<a href={getRelativeLocaleUrl(lang, '')} class="navbar-brand">{SITE_TITLE}</a>
 						<!-- Toggle Button-->
 						<button type="button" data-toggle="collapse" data-target="#navbarcollapse" aria-controls="navbarcollapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler">
 							<span></span>
@@ -74,24 +125,30 @@ const { title, description = '', activeNav = 'home' } = Astro.props;
 					<!-- Navbar Menu -->
 					<div id="navbarcollapse" class="collapse navbar-collapse">
 						<ul class="navbar-nav ml-auto">
-							<li class="nav-item">
-								<a href="/" class={`nav-link ${activeNav === 'home' ? 'active' : ''}`}>Home</a>
-							</li>
-							<li class="nav-item">
-								<a href="/blog" class={`nav-link ${activeNav === 'blog' ? 'active' : ''}`}>Blog</a>
-							</li>
-							<li class="nav-item">
-								<a href="/post" class={`nav-link ${activeNav === 'post' ? 'active' : ''}`}>Post</a>
-							</li>
-							<li class="nav-item">
-								<a href="/contact" class={`nav-link ${activeNav === 'contact' ? 'active' : ''}`}>Contact</a>
-							</li>
+							{
+								navItems.map(({ key, path }) => (
+									<li class="nav-item">
+										<a href={getRelativeLocaleUrl(lang, path)} class:list={['nav-link', { active: activeNav === key }]}>
+											{t(`nav.${key}`)}
+										</a>
+									</li>
+								))
+							}
 						</ul>
 						<div class="navbar-text">
 							<a href="/" class="search-btn"><i class="icon-search-1"></i></a>
 						</div>
 						<ul class="langs navbar-text">
-							<a href="/" class="active">EN</a><span> </span><a href="/">ES</a>
+							{
+								locales.map((locale, index) => (
+									<>
+										{index > 0 && <span> </span>}
+										<a href={switchUrl(locale)} hreflang={locale} class:list={{ active: locale === lang }}>
+											{languages[locale]}
+										</a>
+									</>
+								))
+							}
 						</ul>
 					</div>
 				</div>
@@ -107,7 +164,7 @@ const { title, description = '', activeNav = 'home' } = Astro.props;
 				<div class="row">
 					<div class="col-md-4">
 						<div class="logo">
-							<h6 class="text-white">Bootstrap Blog</h6>
+							<h6 class="text-white">{SITE_TITLE}</h6>
 						</div>
 						<div class="contact-details">
 							<p>53 Broadway, Broklyn, NY 11249</p>
@@ -188,7 +245,7 @@ const { title, description = '', activeNav = 'home' } = Astro.props;
 				<div class="container">
 					<div class="row">
 						<div class="col-md-6">
-							<p>© 2017. All rights reserved. Your great site.</p>
+							<p>© {new Date().getFullYear()} {SITE_TITLE}. {t('footer.rights')}</p>
 						</div>
 						<div class="col-md-6 text-right">
 							<p>
