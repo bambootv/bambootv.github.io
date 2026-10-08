@@ -1,23 +1,42 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
 import PostCard from '../../components/PostCard.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import { getLang, useTranslations } from '../../i18n/ui';
 import MainLayout from '../../layouts/MainLayout.astro';
-import { getPostsByLang } from '../../lib/posts';
+import { getPosts, getReadingOrder, getTopics } from '../../lib/posts';
 
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
-const posts = await getPostsByLang(lang);
+// Built newest first; the script below re-orders the cards for the other choices.
+const posts = await getPosts(lang);
+const readingIndex = new Map(
+	(await getTopics(lang)).flatMap(getReadingOrder).map((post, index) => [post.entry.id, index]),
+);
+const sortOptions = ['newest', 'oldest', 'title', 'series'] as const;
 ---
 
-<MainLayout title={t('nav.blog')} activeNav="blog">
+<MainLayout title={t('nav.posts')} activeNav="posts">
 	<div class="container">
 		<div class="row">
 			<main class="posts-listing col-lg-8">
 				<div class="container">
-					<div class="row">
-						{posts.map(({ post, slug }) => <PostCard post={post} href={getRelativeLocaleUrl(lang, `blog/${slug}`)} />)}
+					<div class="d-flex justify-content-end align-items-center mb-4">
+						<label for="post-sort" class="small text-muted mb-0 mr-2">{t('sort.label')}</label>
+						<select id="post-sort" class="custom-select custom-select-sm w-auto">
+							{sortOptions.map((option) => <option value={option}>{t(`sort.${option}`)}</option>)}
+						</select>
+					</div>
+					<div id="post-list" class="row">
+						{
+							posts.map((post) => (
+								<PostCard
+									post={post}
+									data-date={post.entry.data.pubDate.valueOf()}
+									data-title={post.entry.data.title}
+									data-reading={readingIndex.get(post.entry.id)}
+								/>
+							))
+						}
 					</div>
 				</div>
 			</main>
@@ -26,3 +45,38 @@ const posts = await getPostsByLang(lang);
 		</div>
 	</div>
 </MainLayout>
+
+<script>
+	type Card = HTMLElement;
+
+	const select = document.querySelector<HTMLSelectElement>('#post-sort');
+	const list = document.querySelector<HTMLElement>('#post-list');
+
+	if (select && list) {
+		const lang = document.documentElement.lang;
+		const cards = [...list.children] as Card[];
+		const compare: Record<string, (a: Card, b: Card) => number> = {
+			newest: (a, b) => Number(b.dataset.date) - Number(a.dataset.date),
+			oldest: (a, b) => Number(a.dataset.date) - Number(b.dataset.date),
+			title: (a, b) => (a.dataset.title ?? '').localeCompare(b.dataset.title ?? '', lang),
+			series: (a, b) => Number(a.dataset.reading) - Number(b.dataset.reading),
+		};
+
+		const apply = (choice: string | null) => {
+			const key = choice && choice in compare ? choice : 'newest';
+			select.value = key;
+			list.append(...[...cards].sort(compare[key]));
+		};
+
+		select.addEventListener('change', () => {
+			apply(select.value);
+			// Keep the choice in the address so a reload or a shared link shows the same order
+			const url = new URL(location.href);
+			if (select.value === 'newest') url.searchParams.delete('sort');
+			else url.searchParams.set('sort', select.value);
+			history.replaceState(null, '', url);
+		});
+
+		apply(new URLSearchParams(location.search).get('sort'));
+	}
+</script>

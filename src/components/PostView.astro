@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import PostLayout from '../layouts/PostLayout.astro';
+import type { Post, Series } from '../lib/posts';
+
+interface Props {
+	post: Post;
+	series: Series;
+	prev?: Post;
+	next?: Post;
+}
+
+const { post, series, prev, next } = Astro.props;
+const { Content } = await render(post.entry);
+---
+
+<PostLayout
+	{...post.entry.data}
+	series={series}
+	part={post.part}
+	prev={prev}
+	next={next}
+	contentLang={post.lang}
+	translations={post.translations}
+>
+	<Content />
+</PostLayout>

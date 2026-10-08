@@ -1,0 +1,27 @@
+---
+import SeriesCard from '../../components/SeriesCard.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { getLang, useTranslations } from '../../i18n/ui';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getAllSeries } from '../../lib/posts';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const seriesList = await getAllSeries(lang);
+---
+
+<MainLayout title={t('nav.series')} activeNav="series">
+	<div class="container">
+		<div class="row">
+			<main class="posts-listing col-lg-8">
+				<div class="container">
+					<div class="row">
+						{seriesList.map((series) => <SeriesCard series={series} showTopic />)}
+					</div>
+				</div>
+			</main>
+
+			<Sidebar />
+		</div>
+	</div>
+</MainLayout>

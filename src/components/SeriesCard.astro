@@ -1,0 +1,45 @@
+---
+import { Image } from 'astro:assets';
+import { getLang, useCounts, useTranslations } from '../i18n/ui';
+import type { Series } from '../lib/posts';
+
+// A series or a chapter, shown in the same grid as post cards with the theme's post card markup.
+interface Props {
+	series: Series;
+	// Show the series' topic in the category slot instead of the counts, as on `/series/`
+	showTopic?: boolean;
+}
+
+const { series, showTopic = false } = Astro.props;
+const { title, description, cover } = series.entry.data;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const count = useCounts(lang);
+const topic = series.ancestors[0];
+
+const levelLabel = series.level === 'chapter' ? `${t('level.chapter')} ${series.position}` : t('level.series');
+const counts =
+	series.level === 'chapter'
+		? count.posts(series.postCount)
+		: `${count.chapters(series.children.length)} · ${count.posts(series.postCount)}`;
+---
+
+<div class="post col-xl-6">
+	<div class="post-thumbnail">
+		<a href={series.url}>
+			<Image src={cover} width={720} height={480} alt="" class="img-fluid" />
+		</a>
+	</div>
+	<div class="post-details">
+		<div class="post-meta d-flex justify-content-between">
+			<div class="date meta-last">{showTopic ? counts : levelLabel}</div>
+			<div class="category">
+				{showTopic && topic ? <a href={topic.url}>{topic.title}</a> : <a href={series.url}>{counts}</a>}
+			</div>
+		</div>
+		<a href={series.url}>
+			<h3 class="h4">{title}</h3>
+		</a>
+		<p class="text-muted">{description}</p>
+	</div>
+</div>
