@@ -1,11 +1,10 @@
 ---
-title: 'Diversity in Engineering: The Effect on Questions'
+title: 'Alberto Savoia Can Teach You About Interior'
 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.'
-pubDate: 'Aug 03 2026'
-heroImage: '../../../assets/blog-post-3.jpeg'
-category: ['Business', 'Financial']
+pubDate: 'Aug 05 2026'
+heroImage: '../../../../../assets/blog-post-2.jpg'
 author: 'John Doe'
-authorAvatar: '/img/avatar-3.jpg'
+authorAvatar: '/img/avatar-2.jpg'
 commentCount: 12
 ---
 

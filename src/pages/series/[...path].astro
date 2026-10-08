@@ -1,0 +1,22 @@
+---
+import PostView from '../../components/PostView.astro';
+import SeriesView from '../../components/SeriesView.astro';
+import { type SeriesRouteProps, getSeriesRouteStaticPaths } from '../../lib/posts';
+
+// Series can be nested, so one route serves every series page and every post page.
+export async function getStaticPaths() {
+	return getSeriesRouteStaticPaths('vi');
+}
+
+type Props = SeriesRouteProps;
+
+const props = Astro.props;
+---
+
+{
+	props.kind === 'series' ? (
+		<SeriesView series={props.series} />
+	) : (
+		<PostView post={props.post} series={props.series} prev={props.prev} next={props.next} />
+	)
+}

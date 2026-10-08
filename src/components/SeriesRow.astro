@@ -1,0 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { AUTHOR } from '../consts';
+import { getLang, useTranslations } from '../i18n/ui';
+import { type Series, getReadingOrder, getRelativeTime } from '../lib/posts';
+
+// One row of the theme's "featured posts" block, used here for a series.
+interface Props {
+	series: Series;
+	// Image on the left instead of the right, as the theme alternates
+	reverse?: boolean;
+}
+
+const { series, reverse = false } = Astro.props;
+const { title, description, cover } = series.entry.data;
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const latest = getReadingOrder(series)
+	.map((post) => post.entry.data.pubDate)
+	.sort((a, b) => b.valueOf() - a.valueOf())[0];
+---
+
+<div class="row d-flex align-items-stretch">
+	<div class:list={['text col-lg-7', { 'order-lg-2': reverse }]}>
+		<div class="text-inner d-flex align-items-center">
+			<div class="content">
+				<header class="post-header">
+					<div class="category">
+						<a href={series.url}>{series.postCount} {t('series.count')}</a>
+					</div>
+					<a href={series.url}>
+						<h2 class="h4">{title}</h2>
+					</a>
+				</header>
+				<p>{description}</p>
+				<footer class="post-footer d-flex align-items-center">
+					<a href={getRelativeLocaleUrl(lang, 'about')} class="author d-flex align-items-center flex-wrap">
+						<div class="avatar">
+							<img src={AUTHOR.avatar} alt="" class="img-fluid" />
+						</div>
+						<div class="title"><span>{AUTHOR.name}</span></div>
+					</a>
+					{
+						/* `comments` is the theme class for the last item of this row (no trailing divider) */
+						latest && (
+							<div class="comments">
+								<i class="icon-clock" />
+								<time datetime={latest.toISOString()}>{getRelativeTime(latest, lang)}</time>
+							</div>
+						)
+					}
+				</footer>
+			</div>
+		</div>
+	</div>
+	<div class:list={['image col-lg-5', { 'order-lg-1': reverse }]}>
+		<a href={series.url}>
+			<Image src={cover} width={960} alt="" style="width: auto;" />
+		</a>
+	</div>
+</div>

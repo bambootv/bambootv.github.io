@@ -14,11 +14,19 @@ const vi = {
   "site.description":
     "Nhật ký hành trình đạp xe xuyên Việt và kinh nghiệm lập trình web của Bamboo.",
   "nav.home": "Trang chủ",
+  "nav.series": "Series",
   "nav.blog": "Blog",
   "nav.about": "Giới thiệu",
   "nav.contact": "Liên hệ",
   "about.title": "Về tôi",
   "post.updated": "Cập nhật lần cuối",
+  "post.part": "Phần",
+  "post.prev": "Bài trước",
+  "post.next": "Bài sau",
+  "post.fallback":
+    "Bài này chưa có bản tiếng Việt. Đang hiển thị bản tiếng Anh.",
+  "series.count": "bài",
+  "series.inThis": "Trong series này",
   "footer.rights": "Đã đăng ký bản quyền.",
   "404.title": "Không tìm thấy trang",
   "404.lead": "Trang bạn tìm không tồn tại.",
@@ -30,11 +38,19 @@ const en: Record<keyof typeof vi, string> = {
   "site.description":
     "Bamboo's journal of cycling across Vietnam and notes from years of web development.",
   "nav.home": "Home",
+  "nav.series": "Series",
   "nav.blog": "Blog",
   "nav.about": "About",
   "nav.contact": "Contact",
   "about.title": "About Me",
   "post.updated": "Last updated on",
+  "post.part": "Part",
+  "post.prev": "Previous Post",
+  "post.next": "Next Post",
+  "post.fallback":
+    "This post is not available in English yet. Showing the Vietnamese version.",
+  "series.count": "posts",
+  "series.inThis": "In this series",
   "footer.rights": "All rights reserved.",
   "404.title": "Page Not Found",
   "404.lead": "The page you are looking for doesn't exist.",
@@ -56,7 +72,7 @@ export function useTranslations(lang: Lang) {
   return (key: UIKey) => ui[lang][key];
 }
 
-// '/en/blog/first-post/' -> 'blog/first-post/', '/blog/' -> 'blog/'
+// '/en/series/mobile-app/' -> 'series/mobile-app/', '/blog/' -> 'blog/'
 export function stripLocale(pathname: string): string {
   const [, first, ...rest] = pathname.split("/");
   return first !== defaultLang && first in languages

@@ -1,11 +1,10 @@
 ---
 title: 'Alberto Savoia Can Teach You About Interior'
 description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.'
-pubDate: 'Aug 07 2026'
-heroImage: '../../../assets/blog-post-1.jpeg'
-category: 'Business'
+pubDate: 'Aug 01 2026'
+heroImage: '../../../../../assets/blog-post-4.jpeg'
 author: 'John Doe'
-authorAvatar: '/img/avatar-3.jpg'
+authorAvatar: '/img/avatar-1.jpg'
 commentCount: 12
 ---
 

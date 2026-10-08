@@ -8,7 +8,7 @@ import PostComments from '../components/PostComments.astro';
 import Sidebar from '../components/Sidebar.astro';
 import { AUTHOR } from '../consts';
 import { type Lang, getLang, useTranslations } from '../i18n/ui';
-import { getRelativeTime } from '../lib/posts';
+import { type Post, type Series, getRelativeTime } from '../lib/posts';
 import MainLayout from './MainLayout.astro';
 
 interface Props {
@@ -17,12 +17,18 @@ interface Props {
 	pubDate?: Date;
 	updatedDate?: Date;
 	heroImage?: ImageMetadata;
-	category?: string[];
 	author?: string;
 	authorAvatar?: string;
 	commentCount?: number;
-	activeNav?: 'blog' | 'about';
-	availableLangs?: Lang[];
+	// Set on posts: the series it belongs to, its position, and its neighbours
+	series?: Series;
+	part?: number;
+	prev?: Post;
+	next?: Post;
+	activeNav?: 'series' | 'about';
+	// Language of the file being shown and the languages that have their own file
+	contentLang?: Lang;
+	translations?: Lang[];
 }
 
 const {
@@ -31,16 +37,22 @@ const {
 	pubDate,
 	updatedDate,
 	heroImage,
-	category = [],
 	author = AUTHOR.name,
 	authorAvatar = AUTHOR.avatar,
 	commentCount,
-	activeNav = 'blog',
-	availableLangs,
+	series,
+	part,
+	prev,
+	next,
+	activeNav = 'series',
+	contentLang,
+	translations,
 } = Astro.props;
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
 const hasComments = commentCount !== undefined;
+// The page's language has no file for this post, so another language's file is shown
+const fallbackLang = contentLang !== lang ? contentLang : undefined;
 ---
 
 <MainLayout
@@ -48,7 +60,8 @@ const hasComments = commentCount !== undefined;
 	description={description}
 	image={heroImage}
 	activeNav={activeNav}
-	availableLangs={availableLangs}
+	contentLang={contentLang}
+	translations={translations}
 >
 	<div class="container">
 		<div class="row">
@@ -64,15 +77,21 @@ const hasComments = commentCount !== undefined;
 						}
 						<div class="post-details">
 							{
-								category.length > 0 && (
+								series && (
 									<div class="post-meta d-flex justify-content-between">
 										<div class="category">
-											{category.map((name) => <a href={getRelativeLocaleUrl(lang, 'blog')}>{name}</a>)}
+											{series.ancestors.map((parent) => (
+												<a href={parent.url}>{parent.title}</a>
+											))}
+											<a href={series.url}>{series.entry.data.title}</a>
+											<a href={series.url}>
+												{t('post.part')} {part}/{series.posts.length}
+											</a>
 										</div>
 									</div>
 								)
 							}
-							<h1>
+							<h1 lang={fallbackLang}>
 								{title}
 								{pubDate && <a href="#"><i class="fa fa-bookmark-o" /></a>}
 							</h1>
@@ -111,35 +130,40 @@ const hasComments = commentCount !== undefined;
 									</div>
 								)
 							}
-							<div class="post-body">
+							{fallbackLang && <p class="small text-muted font-italic mt-3 mb-0">{t('post.fallback')}</p>}
+							<div class="post-body" lang={fallbackLang}>
 								<slot />
 							</div>
 							{
-								/* Sample tags, post navigation and comments from the theme, hard-coded for now */
+								/* Sample tags and comments from the theme, hard-coded for now */
 								pubDate && (
 										<>
 										<div class="post-tags">
 											<a href="#" class="tag">#Business</a><a href="#" class="tag">#Tricks</a><a href="#" class="tag">#Financial</a><a href="#" class="tag">#Economy</a>
 										</div>
 										<div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
-											<a href="#" class="prev-post text-left d-flex align-items-center">
-												<div class="icon prev">
-													<i class="fa fa-angle-left"></i>
-												</div>
-												<div class="text">
-													<strong class="text-primary">Previous Post </strong>
-													<h6>I Bought a Wedding Dress.</h6>
-												</div>
-											</a>
-											<a href="#" class="next-post text-right d-flex align-items-center justify-content-end">
-												<div class="text">
-													<strong class="text-primary">Next Post </strong>
-													<h6>I Bought a Wedding Dress.</h6>
-												</div>
-												<div class="icon next">
-													<i class="fa fa-angle-right"> </i>
-												</div>
-											</a>
+											{prev && (
+												<a href={prev.url} class="prev-post text-left d-flex align-items-center">
+													<div class="icon prev">
+														<i class="fa fa-angle-left" />
+													</div>
+													<div class="text">
+														<strong class="text-primary">{t('post.prev')} </strong>
+														<h6>{prev.entry.data.title}</h6>
+													</div>
+												</a>
+											)}
+											{next && (
+												<a href={next.url} class="next-post text-right d-flex align-items-center justify-content-end ml-auto">
+													<div class="text">
+														<strong class="text-primary">{t('post.next')} </strong>
+														<h6>{next.entry.data.title}</h6>
+													</div>
+													<div class="icon next">
+														<i class="fa fa-angle-right" />
+													</div>
+												</a>
+											)}
 									</div>
 										<PostComments />
 									</>
@@ -150,7 +174,7 @@ const hasComments = commentCount !== undefined;
 				</div>
 			</main>
 
-			<Sidebar />
+			<Sidebar series={series} current={part} />
 		</div>
 	</div>
 </MainLayout>

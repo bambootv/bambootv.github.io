@@ -1,0 +1,34 @@
+---
+import { Image } from 'astro:assets';
+import { getLang, useTranslations } from '../i18n/ui';
+import type { Series } from '../lib/posts';
+
+// A child series shown in the same grid as post cards, using the theme's post card markup.
+interface Props {
+	series: Series;
+}
+
+const { series } = Astro.props;
+const { title, description, cover } = series.entry.data;
+const t = useTranslations(getLang(Astro.currentLocale));
+---
+
+<div class="post col-xl-6">
+	<div class="post-thumbnail">
+		<a href={series.url}>
+			<Image src={cover} width={720} height={480} alt="" class="img-fluid" />
+		</a>
+	</div>
+	<div class="post-details">
+		<div class="post-meta d-flex justify-content-between">
+			<div class="date meta-last">{t('nav.series')}</div>
+			<div class="category">
+				<a href={series.url}>{series.postCount} {t('series.count')}</a>
+			</div>
+		</div>
+		<a href={series.url}>
+			<h3 class="h4">{title}</h3>
+		</a>
+		<p class="text-muted">{description}</p>
+	</div>
+</div>

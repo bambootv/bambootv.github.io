@@ -1,0 +1,18 @@
+---
+import SeriesRow from '../../components/SeriesRow.astro';
+import { getLang, useTranslations } from '../../i18n/ui';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getSeriesList } from '../../lib/posts';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const seriesList = await getSeriesList(lang);
+---
+
+<MainLayout title={t('nav.series')} activeNav="series">
+	<section class="featured-posts">
+		<div class="container">
+			{seriesList.map((series, index) => <SeriesRow series={series} reverse={index % 2 === 1} />)}
+		</div>
+	</section>
+</MainLayout>

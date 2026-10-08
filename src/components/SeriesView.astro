@@ -1,0 +1,62 @@
+---
+import { render } from 'astro:content';
+import { getLang, useTranslations } from '../i18n/ui';
+import MainLayout from '../layouts/MainLayout.astro';
+import type { Series } from '../lib/posts';
+import PostCard from './PostCard.astro';
+import SeriesCard from './SeriesCard.astro';
+import Sidebar from './Sidebar.astro';
+
+interface Props {
+	series: Series;
+}
+
+const { series } = Astro.props;
+const { title, description, cover } = series.entry.data;
+const t = useTranslations(getLang(Astro.currentLocale));
+const { Content } = await render(series.entry);
+---
+
+<MainLayout
+	title={title}
+	description={description}
+	image={cover}
+	activeNav="series"
+	contentLang={series.lang}
+	translations={series.translations}
+>
+	<div class="container">
+		<div class="row">
+			<main class="posts-listing col-lg-8">
+				<div class="container">
+					<header class="series-header">
+						{
+							series.ancestors.length > 0 && (
+								<div class="category">
+									{series.ancestors.map((parent) => (
+										<a href={parent.url}>{parent.title}</a>
+									))}
+								</div>
+							)
+						}
+						<h1>{title}</h1>
+						<p class="text-big">{description}</p>
+						<Content />
+					</header>
+					<div class="row">
+						{series.children.map((child) => <SeriesCard series={child} />)}
+						{series.posts.map((post) => <PostCard post={post} label={`${t('post.part')} ${post.part}`} />)}
+					</div>
+				</div>
+			</main>
+
+			<Sidebar />
+		</div>
+	</div>
+</MainLayout>
+
+<style>
+	.series-header {
+		margin-bottom: 50px;
+	}
+</style>

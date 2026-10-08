@@ -1,14 +1,13 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
 import PostCard from '../../components/PostCard.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import { getLang, useTranslations } from '../../i18n/ui';
 import MainLayout from '../../layouts/MainLayout.astro';
-import { getPostsByLang } from '../../lib/posts';
+import { getPosts } from '../../lib/posts';
 
 const lang = getLang(Astro.currentLocale);
 const t = useTranslations(lang);
-const posts = await getPostsByLang(lang);
+const posts = await getPosts(lang);
 ---
 
 <MainLayout title={t('nav.blog')} activeNav="blog">
@@ -17,7 +16,7 @@ const posts = await getPostsByLang(lang);
 			<main class="posts-listing col-lg-8">
 				<div class="container">
 					<div class="row">
-						{posts.map(({ post, slug }) => <PostCard post={post} href={getRelativeLocaleUrl(lang, `blog/${slug}`)} />)}
+						{posts.map((post) => <PostCard post={post} />)}
 					</div>
 				</div>
 			</main>

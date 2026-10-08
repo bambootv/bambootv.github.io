@@ -7,10 +7,13 @@ import { type Lang, defaultLang, getLang, languages, locales, stripLocale, useTr
 interface Props {
 	title?: string;
 	description?: string;
-	activeNav?: 'home' | 'blog' | 'about' | 'contact';
+	activeNav?: 'home' | 'series' | 'blog' | 'about' | 'contact';
 	image?: ImageMetadata;
 	// Languages this page exists in. The switcher falls back to the home page for the others.
 	availableLangs?: Lang[];
+	// Content pages: the language of the file being shown, and the languages that have their own file.
+	contentLang?: Lang;
+	translations?: Lang[];
 }
 
 const lang = getLang(Astro.currentLocale);
@@ -21,18 +24,23 @@ const {
 	activeNav = 'home',
 	image,
 	availableLangs = locales,
+	contentLang = lang,
+	translations = availableLangs,
 } = Astro.props;
 
 const pageTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const pagePath = stripLocale(Astro.url.pathname);
+// A page showing another language's content points search engines at the original
+const canonicalURL =
+	contentLang === lang ? new URL(Astro.url.pathname, Astro.site) : getAbsoluteLocaleUrl(contentLang, pagePath);
 const ogImage = new URL(image?.src ?? '/img/hero.jpg', Astro.site);
 const rssPath = lang === defaultLang ? '/rss.xml' : `/${lang}/rss.xml`;
 
-const pagePath = stripLocale(Astro.url.pathname);
 const switchUrl = (locale: Lang) => getRelativeLocaleUrl(locale, availableLangs.includes(locale) ? pagePath : '');
 
 const navItems = [
 	{ key: 'home', path: '' },
+	{ key: 'series', path: 'series' },
 	{ key: 'blog', path: 'blog' },
 	{ key: 'about', path: 'about' },
 	{ key: 'contact', path: 'contact' },
@@ -49,7 +57,7 @@ const navItems = [
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalURL} />
 		{
-			availableLangs.map((locale) => (
+			translations.map((locale) => (
 				<link rel="alternate" hreflang={locale} href={getAbsoluteLocaleUrl(locale, pagePath)} />
 			))
 		}

@@ -1,0 +1,12 @@
+---
+import { type SeriesRouteProps, getSeriesRouteStaticPaths } from '../../../lib/posts';
+import Page from '../../series/[...path].astro';
+
+export async function getStaticPaths() {
+	return getSeriesRouteStaticPaths('en');
+}
+
+type Props = SeriesRouteProps;
+---
+
+<Page {...Astro.props} />

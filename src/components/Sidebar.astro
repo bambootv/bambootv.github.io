@@ -1,5 +1,36 @@
-<!-- Sample sidebar from the theme. The widgets are placeholders until real data is wired in. -->
+---
+import { getLang, useTranslations } from '../i18n/ui';
+import type { Series } from '../lib/posts';
+
+interface Props {
+	// On a post page: its series and the part being read
+	series?: Series;
+	current?: number;
+}
+
+const { series, current } = Astro.props;
+const t = useTranslations(getLang(Astro.currentLocale));
+---
+
 <aside class="col-lg-4">
+	{
+		series && (
+			<div class="widget categories">
+				<header>
+					<h3 class="h6">{t('series.inThis')}</h3>
+				</header>
+				{series.posts.map((post) => (
+					<div class:list={['item d-flex justify-content-between', { current: post.part === current }]}>
+						<a href={post.url} aria-current={post.part === current ? 'page' : undefined}>
+							{post.entry.data.title}
+						</a>
+						<span>{post.part}</span>
+					</div>
+				))}
+			</div>
+		)
+	}
+	<!-- The widgets below are samples from the theme, placeholders until real data is wired in. -->
 	<!-- Widget [Search Bar Widget]-->
 	<div class="widget search">
 		<header>
@@ -109,3 +140,10 @@
 		</ul>
 	</div>
 </aside>
+
+<style>
+	.widget.categories .item.current,
+	.widget.categories .item.current span {
+		color: #000;
+	}
+</style>

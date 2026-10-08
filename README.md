@@ -1,62 +1,126 @@
-# Astro Starter Kit: Blog
+# Bamboo Blog
 
-```sh
-npm create astro@latest -- --template blog
+Blog cá nhân dựng bằng [Astro](https://astro.build), xuất ra file tĩnh và chạy trên GitHub Pages tại <https://bambootv.github.io>. Giao diện dùng theme Bootstrap Blog (Bootstrap Temple). Nội dung song ngữ: tiếng Việt ở `/`, tiếng Anh ở `/en/`.
+
+## Lệnh
+
+```bash
+npm install            # cài thư viện
+npm run dev            # chạy thử tại http://localhost:4321
+npm run check          # kiểm tra kiểu
+npm run build          # build ra dist/
+npm run preview        # xem bản build
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Sau khi sửa `src/content.config.ts` hoặc đổi tên thư mục nội dung, nếu trang báo lỗi lạ thì dừng dev server và chạy `npm run dev -- --force` để dựng lại bộ đệm nội dung.
 
-Features:
+Push lên nhánh `deployment` thì GitHub Actions tự build và deploy (`.github/workflows/deploy.yml`).
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+## Nội dung được tổ chức theo series
 
-## 🚀 Project Structure
+Thư mục nào có `index.md` thì là một series. Trong đó có thể có bài viết (file đánh số), series con (thư mục con có `index.md`), hoặc cả hai. Lồng bao nhiêu cấp cũng được.
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```
+src/content/series/
+  vi/
+    dap-xe-xuyen-viet/         series cha
+      index.md                 thông tin series
+      mien-bac/                series con
+        index.md
+        01-ha-noi.md           Phần 1 của "Miền Bắc"
+        02-ninh-binh.md        Phần 2
+      mien-trung/              series con
+        index.md
+        01-hue.md
+    mobile-app/                series một cấp
+      index.md
+      01-gioi-thieu.md
+  en/                          bản dịch, chỉ tạo khi có (xem "Bản tiếng Anh")
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+| Đường dẫn | Trang |
+|---|---|
+| `/series/` | Các series cấp cao nhất |
+| `/series/dap-xe-xuyen-viet/` | Series cha: giới thiệu, các series con, và bài trực tiếp nếu có |
+| `/series/dap-xe-xuyen-viet/mien-bac/` | Series con và các bài theo thứ tự |
+| `/series/dap-xe-xuyen-viet/mien-bac/ha-noi/` | Một bài viết |
+| `/blog/` | Mọi bài của mọi series, mới nhất trước |
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Quy tắc:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+- **Đường dẫn đi theo thư mục**, dùng chung cho cả hai ngôn ngữ. Chuyển bài hay series con sang thư mục khác là đổi đường dẫn của nó.
+- **Số ở đầu tên file** là thứ tự bài trong series chứa nó. Số này không nằm trong đường dẫn: `01-ha-noi.md` thành `.../mien-bac/ha-noi/`. Đổi thứ tự bài thì đổi số, link không đổi.
+- **Thứ tự series** (trên trang `/series/` và giữa các series con cùng cha) theo trường `order` trong `index.md`.
+- **"Phần n/N"** đếm trong series chứa trực tiếp bài đó. Nút bài trước / bài sau thì đi xuyên qua các series con của cùng một series gốc: bài trực tiếp của series trước, rồi lần lượt từng series con.
+- **Mọi bài phải nằm trong một series** và tên file phải bắt đầu bằng số. Build báo lỗi khi thư mục có bài hoặc có series con mà thiếu `index.md`, và khi một bài trùng tên với một series con cùng cấp.
 
-Any static assets, like images, can be placed in the `public/` directory.
+### Thêm một series
 
-## 🧞 Commands
+Tạo thư mục trong `src/content/series/vi/` (series cấp cao nhất) hoặc trong thư mục của một series khác (series con), kèm file `index.md`:
 
-All commands are run from the root of the project, from a terminal:
+```md
+---
+title: 'Đạp xe xuyên Việt'
+description: 'Mô tả ngắn, hiện ở trang danh sách series.'
+cover: '../../../../assets/ten-anh-bia.jpg'
+order: 1          # vị trí so với các series cùng cấp
+---
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Đoạn giới thiệu series, hiện ở đầu trang series.
+```
 
-## 👀 Want to learn more?
+### Thêm một bài
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Tạo file `NN-ten-bai.md` (hoặc `.mdx`) trong thư mục series:
 
-## Credit
+```md
+---
+title: 'Tiêu đề bài'
+description: 'Mô tả ngắn, hiện trên thẻ bài.'
+pubDate: 'Aug 07 2026'
+heroImage: '../../../../assets/ten-anh.jpg'   # tuỳ chọn
+updatedDate: 'Aug 10 2026'                    # tuỳ chọn
+author: 'Bamboo'                              # tuỳ chọn, mặc định lấy từ src/consts.ts
+authorAvatar: '/img/avatar-1.jpg'             # tuỳ chọn
+commentCount: 12                              # tuỳ chọn, số gõ tay
+---
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Nội dung viết bằng Markdown.
+```
+
+Ảnh dùng trong frontmatter đặt ở `src/assets/` để Astro tự nén. Đường dẫn ảnh tính từ vị trí file, nên file nằm sâu thêm một cấp thư mục thì thêm một `../`. Schema của các trường nằm trong `src/content.config.ts`.
+
+### Bản tiếng Anh
+
+Chỉ cần viết trong `vi/`. Mọi trang đều có sẵn ở `/en/...` với giao diện tiếng Anh; series hay bài nào chưa có file tiếng Anh thì trang đó hiện nội dung tiếng Việt, kèm một dòng báo cho người đọc.
+
+Khi muốn dịch, tạo file **cùng tên** ở `src/content/series/en/<series>/`. Có thể dịch từng file một: dịch một bài mà chưa dịch `index.md` của series cũng được.
+
+```
+src/content/series/
+  vi/mobile-app/01-gioi-thieu.md
+  en/mobile-app/01-gioi-thieu.md     trang /en/ dùng file này thay cho bản tiếng Việt
+```
+
+Bài chưa dịch không xuất hiện trong RSS tiếng Anh (`/en/rss.xml`), và trang `/en/` của nó khai `canonical` về trang tiếng Việt.
+
+## Mã nguồn
+
+```
+src/
+  content.config.ts    schema của series và bài viết
+  consts.ts            tên site, tác giả mặc định
+  i18n/ui.ts           chuỗi giao diện tiếng Việt và tiếng Anh
+  lib/posts.ts         truy vấn series, bài viết, bài trước/sau
+  lib/feed.ts          RSS
+  layouts/             MainLayout (khung chung), PostLayout (trang bài viết)
+  components/          thẻ và khối giao diện (PostCard, SeriesCard, SeriesRow, Sidebar...),
+                       SeriesView và PostView là hai dạng trang dưới /series/
+  pages/               trang tiếng Việt; pages/en/ bọc lại cho tiếng Anh
+  styles/prose.css     kiểu chữ cho nội dung Markdown
+public/                CSS, JS, ảnh của theme (giữ nguyên bản gốc)
+```
+
+## Phần còn là mẫu
+
+Các phần sau chép từ theme và chưa nối dữ liệu thật: trang chủ, sidebar (tìm kiếm, bài mới, chuyên mục, tag), tag và lượt xem ở trang bài viết, khối bình luận và form bình luận, form liên hệ, form newsletter. Các bài và series hiện có cũng là dữ liệu giả.
