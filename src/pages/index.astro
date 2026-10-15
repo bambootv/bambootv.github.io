@@ -2,9 +2,15 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getLang } from '../i18n/ui';
 import MainLayout from '../layouts/MainLayout.astro';
+import { getTopics } from '../lib/posts';
 
 const lang = getLang(Astro.currentLocale);
 const blogUrl = getRelativeLocaleUrl(lang, 'blog');
+// The featured rows are the topics, in order: the category line shows the topic's name,
+// the rest is still the theme's sample copy.
+const topics = await getTopics(lang);
+const topicUrl = (index: number) => topics[index]?.url ?? blogUrl;
+const topicTitle = (index: number) => topics[index]?.entry.data.title;
 ---
 
 <MainLayout activeNav="home">
@@ -46,9 +52,9 @@ const blogUrl = getRelativeLocaleUrl(lang, 'blog');
 							<div class="content">
 								<header class="post-header">
 									<div class="category">
-										<a href="/">Business</a><a href="/">Technology</a>
+										<a href={topicUrl(0)}>{topicTitle(0)}</a>
 									</div>
-									<a href={blogUrl}>
+									<a href={topicUrl(0)}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -69,22 +75,22 @@ const blogUrl = getRelativeLocaleUrl(lang, 'blog');
 						</div>
 					</div>
 					<div class="image col-lg-5" style="min-height: 346.797px">
-						<img src="/img/featured-pic-1.jpeg" alt="..." />
+						<a href={topicUrl(0)} class="d-block h-100"><img src="/img/featured-pic-1.jpeg" alt="..." /></a>
 					</div>
 				</div>
 				<!-- Post -->
 				<div class="row d-flex align-items-stretch">
 					<div class="image col-lg-5" style="min-height: 346.797px">
-						<img src="/img/featured-pic-2.jpeg" alt="..." />
+						<a href={topicUrl(1)} class="d-block h-100"><img src="/img/featured-pic-2.jpeg" alt="..." /></a>
 					</div>
 					<div class="text col-lg-7">
 						<div class="text-inner d-flex align-items-center">
 							<div class="content">
 								<header class="post-header">
 									<div class="category">
-										<a href="/">Business</a><a href="/">Technology</a>
+										<a href={topicUrl(1)}>{topicTitle(1)}</a>
 									</div>
-									<a href={blogUrl}>
+									<a href={topicUrl(1)}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -112,9 +118,9 @@ const blogUrl = getRelativeLocaleUrl(lang, 'blog');
 							<div class="content">
 								<header class="post-header">
 									<div class="category">
-										<a href="/">Business</a><a href="/">Technology</a>
+										<a href={topicUrl(2)}>{topicTitle(2)}</a>
 									</div>
-									<a href={blogUrl}>
+									<a href={topicUrl(2)}>
 										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
 									</a>
 								</header>
@@ -135,7 +141,7 @@ const blogUrl = getRelativeLocaleUrl(lang, 'blog');
 						</div>
 					</div>
 					<div class="image col-lg-5" style="min-height: 346.797px">
-						<img src="/img/featured-pic-3.jpeg" alt="..." />
+						<a href={topicUrl(2)} class="d-block h-100"><img src="/img/featured-pic-3.jpeg" alt="..." /></a>
 					</div>
 				</div>
 			</div>

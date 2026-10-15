@@ -1,0 +1,70 @@
+---
+import { getImage } from 'astro:assets';
+import { getLang, useCounts } from '../i18n/ui';
+import type { Series } from '../lib/posts';
+
+// Head of a topic page: a full-width band with the topic's cover as a darkened background,
+// after the "Divider" block of the theme's home page. It carries the page's h1.
+interface Props {
+	topic: Series;
+}
+
+const { topic } = Astro.props;
+const { title, description, cover } = topic.entry.data;
+const count = useCounts(getLang(Astro.currentLocale));
+const background = await getImage({ src: cover, width: 1920 });
+---
+
+<section
+	class="topic-banner"
+	style={`background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url(${background.src});`}
+>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="topic-banner-count">{count.series(topic.children.length)} · {count.posts(topic.postCount)}</div>
+				<h1>{title}</h1>
+				<p>{description}</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Not the theme's .divider class: its scroll parallax (front.js) would slide the background out of frame */
+	.topic-banner {
+		padding: 110px 0;
+		color: #fff;
+		background-size: cover;
+		background-position: center;
+	}
+
+	/* Long names wrap instead of being cut off by the theme's `section { overflow-x: hidden }` */
+	.topic-banner h1 {
+		overflow-wrap: anywhere;
+	}
+
+	@media (max-width: 575px) {
+		.topic-banner {
+			padding: 70px 0;
+		}
+
+		.topic-banner h1 {
+			font-size: 1.9rem;
+		}
+	}
+
+	.topic-banner p {
+		max-width: 560px;
+		margin-bottom: 0;
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.topic-banner-count {
+		margin-bottom: 10px;
+		font-size: 0.8em;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+</style>

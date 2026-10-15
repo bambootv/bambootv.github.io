@@ -3,9 +3,27 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { AUTHOR } from './consts';
 
-const blog = defineCollection({
-	// Load Markdown and MDX files in the `src/content/blog/` directory.
-	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+// Everything lives in `src/content/topics/<lang>/<topic>/`. Any folder with an index.md is a
+// level of the tree: the top folders are topics, the folders inside them are series, and a
+// series holds posts, child series, or both.
+//   index.md        the topic or series itself
+//   NN-slug.md(x)   a post; NN is its position in the series
+const base = './src/content/topics';
+
+const series = defineCollection({
+	loader: glob({ base, pattern: '*/*/**/index.md' }),
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			description: z.string(),
+			cover: image(),
+			// Position among its siblings (topics, or series of the same parent)
+			order: z.number().default(0),
+		}),
+});
+
+const posts = defineCollection({
+	loader: glob({ base, pattern: '*/*/**/[0-9]*.{md,mdx}' }),
 	// Type-check frontmatter using a schema
 	schema: ({ image }) =>
 		z.object({
@@ -15,11 +33,6 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: image().optional(),
-			// One category or a list: 'Business' or ['Business', 'Financial']
-			category: z
-				.union([z.string(), z.array(z.string())])
-				.default([])
-				.transform((value) => [value].flat()),
 			author: z.string().default(AUTHOR.name),
 			// Path to an image in `public/`, e.g. '/img/avatar-1.jpg'
 			authorAvatar: z.string().default(AUTHOR.avatar),
@@ -28,4 +41,4 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+export const collections = { series, posts };

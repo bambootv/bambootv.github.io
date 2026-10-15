@@ -1,0 +1,23 @@
+---
+import Sidebar from '../../components/Sidebar.astro';
+import TopicIndex from '../../components/TopicIndex.astro';
+import { getLang, useTranslations } from '../../i18n/ui';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getTopics } from '../../lib/posts';
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const topics = await getTopics(lang);
+---
+
+<MainLayout title={t('nav.topics')} activeNav="topics">
+	<div class="container">
+		<div class="row">
+			<main class="col-lg-8">
+				{topics.map((topic) => <TopicIndex topic={topic} />)}
+			</main>
+
+			<Sidebar />
+		</div>
+	</div>
+</MainLayout>
