@@ -1,16 +1,31 @@
 ---
+import { Image, getImage } from 'astro:assets';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getLang } from '../i18n/ui';
+import FormattedDate from '../components/FormattedDate.astro';
+import { AUTHOR } from '../consts';
+import { getLang, useCounts, useTranslations } from '../i18n/ui';
 import MainLayout from '../layouts/MainLayout.astro';
-import { getTopics } from '../lib/posts';
+import { getPosts, getTopics } from '../lib/posts';
 
 const lang = getLang(Astro.currentLocale);
-const blogUrl = getRelativeLocaleUrl(lang, 'blog');
-// The featured rows are the topics, in order: the category line shows the topic's name,
-// the rest is still the theme's sample copy.
+const t = useTranslations(lang);
+const count = useCounts(lang);
+const topicsUrl = getRelativeLocaleUrl(lang, 'topics');
+const aboutUrl = getRelativeLocaleUrl(lang, 'about');
 const topics = await getTopics(lang);
-const topicUrl = (index: number) => topics[index]?.url ?? blogUrl;
-const topicTitle = (index: number) => topics[index]?.entry.data.title;
+
+// One featured row per topic (the first three by `order`), linking to the topic page.
+// Rows alternate text-left / image-left like the theme.
+// The cover is a plain <img> without width/height, as in the theme: its CSS sizes the image
+// by height, which fixed width/height attributes would distort.
+const featured = await Promise.all(
+	topics.slice(0, 3).map(async (topic) => ({ topic, cover: (await getImage({ src: topic.entry.data.cover })).src })),
+);
+
+// "Latest from the blog": the newest posts of all topics.
+const latest = (await getPosts(lang)).slice(0, 3);
+
+const dividerUrl = topics.find((topic) => topic.path === 'tam-thuc')?.url ?? topicsUrl;
 ---
 
 <MainLayout activeNav="home">
@@ -20,11 +35,11 @@ const topicTitle = (index: number) => topics[index]?.entry.data.title;
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-7">
-						<h1>Bootstrap 4 Blog - A free template by Bootstrap Temple</h1>
-						<a href={blogUrl} class="hero-link">Discover More</a>
+						<h1>{t('home.hero.title')}</h1>
+						<a href={topicsUrl} class="hero-link">{t('home.hero.cta')}</a>
 					</div>
 				</div>
-				<a href=".intro" class="continue link-scroll"><i class="fa fa-long-arrow-down"></i> Scroll Down</a>
+				<a href=".intro" class="continue link-scroll"><i class="fa fa-long-arrow-down"></i> {t('home.hero.scroll')}</a>
 			</div>
 		</section>
 
@@ -33,10 +48,8 @@ const topicTitle = (index: number) => topics[index]?.entry.data.title;
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-8">
-						<h2 class="h3">Some great intro here</h2>
-						<p class="text-big">
-							Place a nice <strong>introduction</strong> here <strong>to catch reader's attention</strong>. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderi.
-						</p>
+						<h2 class="h3">{t('home.intro.title')}</h2>
+						<p class="text-big" set:html={t('home.intro.text')} />
 					</div>
 				</div>
 			</div>
@@ -45,105 +58,53 @@ const topicTitle = (index: number) => topics[index]?.entry.data.title;
 		<!-- Featured Posts Section-->
 		<section class="featured-posts no-padding-top">
 			<div class="container">
-				<!-- Post-->
-				<div class="row d-flex align-items-stretch">
-					<div class="text col-lg-7">
-						<div class="text-inner d-flex align-items-center">
-							<div class="content">
-								<header class="post-header">
-									<div class="category">
-										<a href={topicUrl(0)}>{topicTitle(0)}</a>
-									</div>
-									<a href={topicUrl(0)}>
-										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
-									</a>
-								</header>
-								<p>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-								</p>
-								<footer class="post-footer d-flex align-items-center">
-									<a href="/" class="author d-flex align-items-center flex-wrap">
-										<div class="avatar">
-											<img src="/img/avatar-1.jpg" alt="..." class="img-fluid" />
-										</div>
-										<div class="title"><span>John Doe</span></div>
-									</a>
-									<div class="date"><i class="icon-clock"></i> 2 months ago</div>
-									<div class="comments"><i class="icon-comment"></i>12</div>
-								</footer>
+				{
+					featured.map(({ topic, cover }, index) => {
+						const { title, description } = topic.entry.data;
+						const image = (
+							<div class="image col-lg-5" style="min-height: 346.797px">
+								<a href={topic.url} class="d-block h-100">
+									<img src={cover} alt="" />
+								</a>
 							</div>
-						</div>
-					</div>
-					<div class="image col-lg-5" style="min-height: 346.797px">
-						<a href={topicUrl(0)} class="d-block h-100"><img src="/img/featured-pic-1.jpeg" alt="..." /></a>
-					</div>
-				</div>
-				<!-- Post -->
-				<div class="row d-flex align-items-stretch">
-					<div class="image col-lg-5" style="min-height: 346.797px">
-						<a href={topicUrl(1)} class="d-block h-100"><img src="/img/featured-pic-2.jpeg" alt="..." /></a>
-					</div>
-					<div class="text col-lg-7">
-						<div class="text-inner d-flex align-items-center">
-							<div class="content">
-								<header class="post-header">
-									<div class="category">
-										<a href={topicUrl(1)}>{topicTitle(1)}</a>
-									</div>
-									<a href={topicUrl(1)}>
-										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
-									</a>
-								</header>
-								<p>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-								</p>
-								<footer class="post-footer d-flex align-items-center">
-									<a href="/" class="author d-flex align-items-center flex-wrap">
-										<div class="avatar">
-											<img src="/img/avatar-2.jpg" alt="..." class="img-fluid" />
+						);
+						return (
+							<div class="row d-flex align-items-stretch">
+								{index % 2 === 1 && image}
+								<div class="text col-lg-7">
+									<div class="text-inner d-flex align-items-center">
+										<div class="content">
+											<header class="post-header">
+												<div class="category">
+													<a href={topic.url}>{t('level.topic')}</a>
+												</div>
+												<a href={topic.url}>
+													<h2 class="h4">{title}</h2>
+												</a>
+											</header>
+											<p>{description}</p>
+											<footer class="post-footer d-flex align-items-center">
+												<a href={aboutUrl} class="author d-flex align-items-center flex-wrap">
+													<div class="avatar">
+														<img src={AUTHOR.avatar} alt="" class="img-fluid" />
+													</div>
+													<div class="title"><span>{AUTHOR.name}</span></div>
+												</a>
+												<div class="date">
+													<i class="fa fa-folder-open-o"></i> {count.series(topic.children.length)}
+												</div>
+												<div class="comments">
+													<i class="fa fa-file-text-o"></i> {count.posts(topic.postCount)}
+												</div>
+											</footer>
 										</div>
-										<div class="title"><span>John Doe</span></div>
-									</a>
-									<div class="date"><i class="icon-clock"></i> 2 months ago</div>
-									<div class="comments"><i class="icon-comment"></i>12</div>
-								</footer>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Post -->
-				<div class="row d-flex align-items-stretch">
-					<div class="text col-lg-7">
-						<div class="text-inner d-flex align-items-center">
-							<div class="content">
-								<header class="post-header">
-									<div class="category">
-										<a href={topicUrl(2)}>{topicTitle(2)}</a>
 									</div>
-									<a href={topicUrl(2)}>
-										<h2 class="h4">Alberto Savoia Can Teach You About Interior</h2>
-									</a>
-								</header>
-								<p>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrude consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-								</p>
-								<footer class="post-footer d-flex align-items-center">
-									<a href="/" class="author d-flex align-items-center flex-wrap">
-										<div class="avatar">
-											<img src="/img/avatar-3.jpg" alt="..." class="img-fluid" />
-										</div>
-										<div class="title"><span>John Doe</span></div>
-									</a>
-									<div class="date"><i class="icon-clock"></i> 2 months ago</div>
-									<div class="comments"><i class="icon-comment"></i>12</div>
-								</footer>
+								</div>
+								{index % 2 === 0 && image}
 							</div>
-						</div>
-					</div>
-					<div class="image col-lg-5" style="min-height: 346.797px">
-						<a href={topicUrl(2)} class="d-block h-100"><img src="/img/featured-pic-3.jpeg" alt="..." /></a>
-					</div>
-				</div>
+						);
+					})
+				}
 			</div>
 		</section>
 
@@ -152,8 +113,8 @@ const topicTitle = (index: number) => topics[index]?.entry.data.title;
 			<div class="container">
 				<div class="row">
 					<div class="col-md-7">
-						<h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</h2>
-						<a href="/" class="hero-link">View More</a>
+						<h2>{t('home.divider.text')}</h2>
+						<a href={dividerUrl} class="hero-link">{t('home.divider.cta')}</a>
 					</div>
 				</div>
 			</div>
@@ -163,81 +124,56 @@ const topicTitle = (index: number) => topics[index]?.entry.data.title;
 		<section class="latest-posts">
 			<div class="container">
 				<header>
-					<h2>Latest from the blog</h2>
-					<p class="text-big">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+					<h2>{t('home.latest.title')}</h2>
+					<p class="text-big">{t('home.latest.lead')}</p>
 				</header>
 				<div class="row">
-					<div class="post col-md-4">
-						<div class="post-thumbnail">
-							<a href={blogUrl}><img src="/img/blog-1.jpg" alt="..." class="img-fluid" /></a>
-						</div>
-						<div class="post-details">
-							<div class="post-meta d-flex justify-content-between">
-								<div class="date">20 May | 2016</div>
-								<div class="category"><a href="/">Business</a></div>
-							</div>
-							<a href={blogUrl}>
-								<h3 class="h4">Ways to remember your important ideas</h3>
-							</a>
-							<p class="text-muted">
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.
-							</p>
-						</div>
-					</div>
-					<div class="post col-md-4">
-						<div class="post-thumbnail">
-							<a href={blogUrl}><img src="/img/blog-2.jpg" alt="..." class="img-fluid" /></a>
-						</div>
-						<div class="post-details">
-							<div class="post-meta d-flex justify-content-between">
-								<div class="date">20 May | 2016</div>
-								<div class="category"><a href="/">Technology</a></div>
-							</div>
-							<a href={blogUrl}>
-								<h3 class="h4">Diversity in Engineering: Effect on Questions</h3>
-							</a>
-							<p class="text-muted">
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.
-							</p>
-						</div>
-					</div>
-					<div class="post col-md-4">
-						<div class="post-thumbnail">
-							<a href={blogUrl}><img src="/img/blog-3.jpg" alt="..." class="img-fluid" /></a>
-						</div>
-						<div class="post-details">
-							<div class="post-meta d-flex justify-content-between">
-								<div class="date">20 May | 2016</div>
-								<div class="category"><a href="/">Financial</a></div>
-							</div>
-							<a href={blogUrl}>
-								<h3 class="h4">Alberto Savoia Can Teach You About Interior</h3>
-							</a>
-							<p class="text-muted">
-								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.
-							</p>
-						</div>
-					</div>
+					{
+						latest.map((post, index) => {
+							const { title, description, pubDate, heroImage } = post.entry.data;
+							return (
+								<div class="post col-md-4">
+									<div class="post-thumbnail">
+										<a href={post.url}>
+											{heroImage ? (
+												<Image src={heroImage} width={720} height={480} alt="" class="img-fluid" />
+											) : (
+												<img src={`/img/blog-${index + 1}.jpg`} alt="" class="img-fluid" />
+											)}
+										</a>
+									</div>
+									<div class="post-details">
+										<div class="post-meta d-flex justify-content-between">
+											<div class="date"><FormattedDate date={pubDate} format="card" /></div>
+											<div class="category"><a href={post.series.url}>{post.series.title}</a></div>
+										</div>
+										<a href={post.url}>
+											<h3 class="h4">{title}</h3>
+										</a>
+										<p class="text-muted">{description}</p>
+									</div>
+								</div>
+							);
+						})
+					}
 				</div>
 			</div>
 		</section>
 
-		<!-- Newsletter Section-->
+		<!-- Newsletter Section: sample form from the theme, not connected to any service yet -->
 		<section class="newsletter no-padding-top">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
-						<h2>Subscribe to Newsletter</h2>
-						<p class="text-big">
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-						</p>
+						<h2>{t('home.newsletter.title')}</h2>
+						<p class="text-big">{t('home.newsletter.lead')}</p>
 					</div>
 					<div class="col-md-8">
 						<div class="form-holder">
 							<form action="/">
 								<div class="form-group">
-									<input type="email" name="email" id="email" placeholder="Type your email address" />
-									<button type="submit" class="submit">Subscribe</button>
+									<input type="email" name="email" id="email" placeholder={t('home.newsletter.placeholder')} />
+									<button type="submit" class="submit">{t('home.newsletter.submit')}</button>
 								</div>
 							</form>
 						</div>

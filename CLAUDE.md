@@ -38,3 +38,9 @@ Everything lives in `src/content/topics/<lang>/`, exactly four levels deep. Each
 The look comes from the "Bootstrap Blog" theme (Bootstrap Temple). Its CSS/JS/fonts/images in `public/` are kept verbatim and loaded by `src/layouts/MainLayout.astro`; site-specific styles go in `public/css/custom*.css` or `src/styles/prose.css` (Markdown body), not in the theme files.
 
 Keep pages as close to the original theme markup as possible, including sample blocks that don't work on a static site yet (sidebar search/tags/categories, comments and comment form, view counts, contact and newsletter forms, the home page). Hard-code them rather than removing or redesigning them; the author will wire up real data later. The original converted theme pages are in commit `a4befcc`, and the raw theme is in `bak/theme.zip`. Current posts and series under `src/content/` are placeholder data.
+
+Style reference: combine two styles, the original theme and Medium (https://medium.com). Use Medium as the reference for things like typography, line length, spacing, the reading experience of a post, and how lists of posts and series are presented, applied through the site-specific stylesheets above. When the two conflict (for example, Medium would drop or redesign a theme block, or the theme's look differs from Medium's), don't pick one silently: tell the user what the conflict is, show the options, and let them choose.
+
+## Git workflow
+
+Before starting a task, check the current branch. If it is `master` and the working tree is clean, create a new branch named after what the task does (short kebab-case, e.g. `medium-style-typography`, `add-tags-page`) and do the work there.

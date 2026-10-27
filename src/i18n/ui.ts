@@ -12,7 +12,22 @@ export const locales = Object.keys(languages) as Lang[];
 
 const vi = {
   "site.description":
-    "Nhật ký hành trình đạp xe xuyên Việt và kinh nghiệm lập trình web của Bamboo.",
+    "Blog của Bamboo về làm việc, tu dưỡng tâm thức và kết nối với mọi người: lập trình web, đạp xe xuyên Việt, sách hay và những thói quen nhỏ.",
+  "home.hero.title": "Học làm nghề, đạp xe xuyên Việt và tập sống điềm tĩnh",
+  "home.hero.cta": "Khám phá các chủ đề",
+  "home.hero.scroll": "Cuộn xuống",
+  "home.intro.title": "Xin chào, mình là Bamboo",
+  "home.intro.text":
+    "Mình là một <strong>lập trình viên web</strong> đang học để thành fullstack, một người mê <strong>đạp xe xuyên Việt</strong>, và một người đang tập sống chậm lại. Blog này ghi lại ba điều mình quan tâm nhất: <strong>làm</strong> việc cho tử tế, giữ <strong>tâm</strong> điềm tĩnh, và <strong>kết nối</strong> với những người xung quanh.",
+  "home.divider.text": "Chỉ cần điềm tĩnh, không ai dám xem thường.",
+  "home.divider.cta": "Đọc thêm",
+  "home.latest.title": "Mới trên blog",
+  "home.latest.lead": "Những bài viết gần đây nhất.",
+  "home.newsletter.title": "Nhận bài mới qua email",
+  "home.newsletter.lead":
+    "Mỗi khi có bài mới về lập trình, đạp xe hay tu dưỡng, mình sẽ gửi một email ngắn. Không quảng cáo, huỷ lúc nào cũng được.",
+  "home.newsletter.placeholder": "Nhập địa chỉ email của bạn",
+  "home.newsletter.submit": "Đăng ký",
   "nav.home": "Trang chủ",
   "nav.topics": "Chủ đề",
   "nav.series": "Loạt bài",
@@ -30,6 +45,7 @@ const vi = {
   "post.next": "Bài sau",
   "post.fallback":
     "Bài này chưa có bản tiếng Việt. Đang hiển thị bản tiếng Anh.",
+  "level.topic": "Chủ đề",
   "level.series": "Loạt bài",
   "level.chapter": "Chương",
   "count.series": "loạt bài",
@@ -47,7 +63,22 @@ const vi = {
 
 const en: Record<keyof typeof vi, string> = {
   "site.description":
-    "Bamboo's journal of cycling across Vietnam and notes from years of web development.",
+    "Bamboo's blog about work, inner calm and connecting with people: web development, cycling across Vietnam, good books and small habits.",
+  "home.hero.title": "Learning a craft, cycling across Vietnam and practising calm",
+  "home.hero.cta": "Explore the topics",
+  "home.hero.scroll": "Scroll Down",
+  "home.intro.title": "Hi, I'm Bamboo",
+  "home.intro.text":
+    "I'm a <strong>web developer</strong> learning to go fullstack, someone who loves <strong>cycling across Vietnam</strong>, and someone learning to slow down. This blog records the three things I care about most: <strong>doing</strong> good work, keeping a <strong>calm mind</strong>, and <strong>connecting</strong> with the people around me.",
+  "home.divider.text": "Stay calm, and no one will dare look down on you.",
+  "home.divider.cta": "Read more",
+  "home.latest.title": "Latest from the blog",
+  "home.latest.lead": "The most recent posts.",
+  "home.newsletter.title": "Get new posts by email",
+  "home.newsletter.lead":
+    "Whenever there's a new post on programming, cycling or self-cultivation, I'll send a short email. No ads, unsubscribe any time.",
+  "home.newsletter.placeholder": "Type your email address",
+  "home.newsletter.submit": "Subscribe",
   "nav.home": "Home",
   "nav.topics": "Topics",
   "nav.series": "Series",
@@ -65,6 +96,7 @@ const en: Record<keyof typeof vi, string> = {
   "post.next": "Next Post",
   "post.fallback":
     "This post is not available in English yet. Showing the Vietnamese version.",
+  "level.topic": "Topic",
   "level.series": "Series",
   "level.chapter": "Chapter",
   "count.series": "series",
