@@ -23,18 +23,18 @@ Cố định bốn cấp, mỗi cấp là một thư mục có `index.md`, bài 
 ```
 src/content/topics/
   vi/
-    topic-1/                         chủ đề (topic)
+    lam/                             chủ đề (topic)
       index.md
       dap-xe-xuyen-viet/             loạt bài (series)
         index.md
         mien-bac/                    chương (chapter)
           index.md
-          01-ha-noi.md               Bài 1 của chương
-          02-ninh-binh.md            Bài 2
+          01-ha-noi-ninh-binh.md     Bài 1 của chương
+          02-ninh-binh-vinh.md       Bài 2
         mien-trung/
           index.md
-          01-hue.md
-    topic-2/
+          01-deo-ngang-ve-hue.md
+    tam-thuc/
   en/                                bản dịch, chỉ tạo khi có (xem "Bản tiếng Anh")
 ```
 
@@ -43,10 +43,10 @@ src/content/topics/
 | `/` | Trang chủ; ba khối featured dẫn tới ba chủ đề đầu tiên theo `order` |
 | `/topics/` | Mọi chủ đề (menu "Chủ đề") |
 | `/series/` | Mọi loạt bài của mọi chủ đề (menu "Loạt bài") |
-| `/topic-1/series/` | Một chủ đề và các loạt bài của nó |
-| `/topic-1/series/dap-xe-xuyen-viet/` | Một loạt bài và các chương |
-| `/topic-1/series/dap-xe-xuyen-viet/mien-bac/` | Một chương và các bài |
-| `/topic-1/series/dap-xe-xuyen-viet/mien-bac/ha-noi/` | Một bài viết |
+| `/lam/series/` | Một chủ đề và các loạt bài của nó |
+| `/lam/series/dap-xe-xuyen-viet/` | Một loạt bài và các chương |
+| `/lam/series/dap-xe-xuyen-viet/mien-bac/` | Một chương và các bài |
+| `/lam/series/dap-xe-xuyen-viet/mien-bac/ha-noi-ninh-binh/` | Một bài viết |
 | `/blog/` | Mọi bài (menu "Bài viết"), sắp xếp được theo mới nhất, cũ nhất, tiêu đề, hoặc thứ tự loạt bài |
 | `/about/` | Giới thiệu, kèm khối liên hệ ở cuối trang |
 
@@ -55,7 +55,7 @@ Quy tắc:
 - **Đường dẫn đi theo thư mục**, có thêm chữ `series` ngay sau tên chủ đề, và dùng chung cho cả hai ngôn ngữ. Đổi tên hay chuyển thư mục là đổi đường dẫn.
 - **Bài viết chỉ nằm trong thư mục chương**, và trong chương không có thư mục con. Tên file bài phải bắt đầu bằng số.
 - **Tên chủ đề không được trùng trang sẵn có**: `blog`, `about`, `topics`, `series`, `en`, `vi`, `img`, `css`, `js`, `fonts`.
-- **Số ở đầu tên file** là thứ tự bài trong chương. Số này không nằm trong đường dẫn: `01-ha-noi.md` thành `.../mien-bac/ha-noi/`. Đổi thứ tự bài thì đổi số, link không đổi.
+- **Số ở đầu tên file** là thứ tự bài trong chương. Số này không nằm trong đường dẫn: `01-ha-noi-ninh-binh.md` thành `.../mien-bac/ha-noi-ninh-binh/`. Đổi thứ tự bài thì đổi số, link không đổi.
 - **Thứ tự chủ đề, loạt bài, chương** theo trường `order` trong `index.md`; số "Chương 1, 2" đánh theo thứ tự đó.
 - **"Bài n/N"** đếm trong chương. Nút bài trước / bài sau đi xuyên các chương của cùng loạt bài và dừng ở đầu, cuối loạt bài.
 - Build báo lỗi chỉ rõ file khi vi phạm các quy tắc trên, khi thư mục thiếu `index.md`, và khi một bài trùng tên với một thư mục cùng cấp.
@@ -104,8 +104,8 @@ Khi muốn dịch, tạo file **cùng tên, cùng thư mục** bên `src/content
 
 ```
 src/content/topics/
-  vi/topic-3/mobile-app/chapter-1/01-gioi-thieu.md
-  en/topic-3/mobile-app/chapter-1/01-gioi-thieu.md     trang /en/ dùng file này thay cho bản tiếng Việt
+  vi/ket-noi/ky-nang-giao-tiep/lang-nghe/01-lang-nghe-chu-dong.md
+  en/ket-noi/ky-nang-giao-tiep/lang-nghe/01-lang-nghe-chu-dong.md     trang /en/ dùng file này thay cho bản tiếng Việt
 ```
 
 Bài chưa dịch không xuất hiện trong RSS tiếng Anh (`/en/rss.xml`), và trang `/en/` của nó khai `canonical` về trang tiếng Việt.
